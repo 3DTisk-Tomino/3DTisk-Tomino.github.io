@@ -5,84 +5,102 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - 3D Tištěné Žetony na Vozík</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 40px; color: #333; }
-        h1, h2 { text-align: center; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; background: white; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background: #007bff; color: white; }
-        tr:nth-child(even) { background: #f9f9f9; }
-        .stats { text-align: center; font-size: 1.2em; margin: 20px; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        button { padding: 10px 20px; background: #28a745; color: white; border: none; cursor: pointer; font-size: 1em; margin: 10px; }
-        button:hover { background: #218838; }
-        .container { max-width: 1200px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .dashboard-link { text-align: center; margin: 30px; padding: 20px; background: #e9ecef; border-radius: 8px; font-size: 1.3em; }
-        .dashboard-link a { color: #007bff; text-decoration: underline; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #000; 
+            margin: 40px; 
+            color: #eee; 
+        }
+        h1, h2 { text-align: center; color: #fff; }
+        .container { 
+            max-width: 1200px; 
+            margin: auto; 
+            background: #111; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1); 
+        }
+        .dashboard-link { 
+            text-align: center; 
+            margin: 40px 0; 
+            padding: 30px; 
+            background: #222; 
+            border-radius: 12px; 
+            font-size: 1.4em; 
+            border: 1px solid #444;
+        }
+        .dashboard-link a { 
+            color: #00ffff; 
+            text-decoration: underline; 
+            font-weight: bold;
+        }
+        .dashboard-link p { 
+            margin-top: 15px; 
+            font-size: 1em; 
+            color: #aaa; 
+        }
+        button { 
+            padding: 12px 24px; 
+            background: #333; 
+            color: #fff; 
+            border: 1px solid #555; 
+            cursor: pointer; 
+            font-size: 1.1em; 
+            margin: 10px; 
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        button:hover { 
+            background: #555; 
+            border-color: #00ffff;
+        }
+        .lock-btn {
+            background: #900;
+        }
+        .lock-btn:hover {
+            background: #c00;
+        }
+        .header-bar {
+            text-align: center;
+            margin-bottom: 30px;
+        }
     </style>
 </head>
 <body>
     <script>
-        // Jednoduchá ochrana heslem - změň si heslo!
-        const password = "Tomino";  // <<< ZMĚŇ TOHLE NA NĚCO SVÉHO!
+        // Ochrana heslem - změň si heslo!
+        const password = "tvojeheslo123";  // <<< ZMĚŇ NA SVÉ!
         const input = prompt("Zadej heslo pro přístup k adminu:");
         if (input !== password) {
             alert("Špatné heslo!");
-            window.location.href = "https://3dtisk-tomino.github.io/";  // Přesměruje na hlavní stránku
+            window.location.href = "https://3dtisk-tomino.github.io/";
+        }
+
+        // Funkce pro Lock tlačítko
+        function lockAdmin() {
+            if (confirm("Opravdu se chceš odhlásit?")) {
+                window.location.href = "https://3dtisk-tomino.github.io/";
+            }
         }
     </script>
 
     <div class="container">
-        <h1>Admin Panel - Objednávky Žetonů</h1>
+        <div class="header-bar">
+            <h1>Admin Panel - Objednávky Žetonů</h1>
+            <button class="lock-btn" onclick="lockAdmin()">🔒 Lock</button>
+        </div>
         
         <div class="dashboard-link">
             <strong>Reálný přehled objednávek přímo z Formspree:</strong><br><br>
             <a href="https://formspree.io/forms/xpqznnno/submissions" target="_blank">
-                ➜ OTEVŘÍT FORMSPREE DASHBOARD (přihlásíš se a uvidíš všechny objednávky + export do CSV) ➜
+                ➜ OTEVŘÍT FORMSPREE DASHBOARD ➜
             </a>
-            <p>(Nejlepší a nejaktuálnější zdroj dat – doporučuju používat primárně tento!)</p>
+            <p>(Přihlásíš se a uvidíš všechny objednávky + export do CSV.<br>Toto je nejlepší a nejaktuálnější zdroj dat.)</p>
         </div>
         
-        <div class="stats">
-            <p><strong>Celkový počet objednávek:</strong> <span id="total-orders">– Používej Formspree pro aktuální čísla –</span></p>
-            <p><strong>Celkové tržby:</strong> <span id="total-revenue">– Spočítej v Formspree (počet × 70 Kč) –</span></p>
-        </div>
-        
-        <h2>Ruční seznam objednávek (pro rychlý přehled – upravuj ručně)</h2>
-        <table id="orders-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Datum</th>
-                    <th>Počet kusů</th>
-                    <th>E-mail</th>
-                    <th>Stav</th>
-                    <th>Akce</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Sem ručně přidávej objednávky z Formspree, pokud chceš lokální kopii -->
-                <tr>
-                    <td>001</td>
-                    <td>2025-12-28</td>
-                    <td>3</td>
-                    <td>zakaznik@example.cz</td>
-                    <td>Nevyřízeno</td>
-                    <td><button onclick="markDone(this)">Označit jako hotovo</button></td>
-                </tr>
-                <!-- Další řádky přidej podle potřeby -->
-            </tbody>
-        </table>
-        
-        <div style="text-align: center; margin: 20px;">
-            <button onclick="alert('Pro export použij Formspree dashboard!')">Připomenout export</button>
+        <div style="text-align: center; margin: 40px;">
+            <p>Všechny objednávky spravuj přímo přes Formspree dashboard výše.</p>
         </div>
     </div>
-
-    <script>
-        function markDone(button) {
-            const row = button.parentElement.parentElement;
-            row.cells[4].textContent = 'Hotovo';
-            button.remove();
-        }
-    </script>
 </body>
 </html>
