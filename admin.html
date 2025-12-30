@@ -8,22 +8,27 @@
         body { 
             font-family: Arial, sans-serif; 
             background: #000; 
-            margin: 40px; 
+            margin: 0; 
+            padding: 40px; 
             color: #eee; 
         }
-        h1, h2 { text-align: center; color: #fff; }
+        h1 { 
+            text-align: center; 
+            color: #fff; 
+            margin-bottom: 30px;
+        }
         .container { 
-            max-width: 1200px; 
+            max-width: 1000px; 
             margin: auto; 
             background: #111; 
-            padding: 30px; 
+            padding: 40px; 
             border-radius: 12px; 
             box-shadow: 0 0 20px rgba(0, 255, 255, 0.1); 
         }
         .dashboard-link { 
             text-align: center; 
             margin: 40px 0; 
-            padding: 30px; 
+            padding: 35px; 
             background: #222; 
             border-radius: 12px; 
             font-size: 1.4em; 
@@ -35,7 +40,7 @@
             font-weight: bold;
         }
         .dashboard-link p { 
-            margin-top: 15px; 
+            margin-top: 20px; 
             font-size: 1em; 
             color: #aaa; 
         }
@@ -46,7 +51,6 @@
             border: 1px solid #555; 
             cursor: pointer; 
             font-size: 1.1em; 
-            margin: 10px; 
             border-radius: 6px;
             transition: all 0.3s;
         }
@@ -56,20 +60,22 @@
         }
         .lock-btn {
             background: #900;
+            position: absolute;
+            top: 20px;
+            right: 20px;
         }
         .lock-btn:hover {
             background: #c00;
         }
-        .header-bar {
-            text-align: center;
-            margin-bottom: 30px;
+        .header {
+            position: relative;
         }
     </style>
 </head>
 <body>
     <script>
-        // Ochrana heslem - změň si heslo!
-        const password = "tvojeheslo123";  // <<< ZMĚŇ NA SVÉ!
+        // Ochrana heslem - ZMĚŇ SI HESLO!
+        const password = "Tomino2012.";  // <<< ZMĚŇ TOHLE!
         const input = prompt("Zadej heslo pro přístup k adminu:");
         if (input !== password) {
             alert("Špatné heslo!");
@@ -85,7 +91,7 @@
     </script>
 
     <div class="container">
-        <div class="header-bar">
+        <div class="header">
             <h1>Admin Panel - Objednávky Žetonů</h1>
             <button class="lock-btn" onclick="lockAdmin()">🔒 Lock</button>
         </div>
@@ -95,11 +101,11 @@
             <a href="https://formspree.io/forms/xpqznnno/submissions" target="_blank">
                 ➜ OTEVŘÍT FORMSPREE DASHBOARD ➜
             </a>
-            <p>(Přihlásíš se a uvidíš všechny objednávky + export do CSV.<br>Toto je nejlepší a nejaktuálnější zdroj dat.)</p>
+            <p>(Přihlásíš se a uvidíš všechny aktuální objednávky + export do CSV.<br>Toto je nejlepší zdroj dat.)</p>
         </div>
         
-        <div style="text-align: center; margin: 40px;">
-            <p>Všechny objednávky spravuj přímo přes Formspree dashboard výše.</p>
+        <div style="text-align: center; color: #888; margin-top: 50px;">
+            <p>Všechny objednávky spravuj přímo v Formspree dashboardu výše.</p>
         </div>
     </div>
 </body>
