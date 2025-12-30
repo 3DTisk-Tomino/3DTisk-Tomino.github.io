@@ -12,22 +12,41 @@
         th { background: #007bff; color: white; }
         tr:nth-child(even) { background: #f9f9f9; }
         .stats { text-align: center; font-size: 1.2em; margin: 20px; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        button { padding: 10px 20px; background: #28a745; color: white; border: none; cursor: pointer; font-size: 1em; }
+        button { padding: 10px 20px; background: #28a745; color: white; border: none; cursor: pointer; font-size: 1em; margin: 10px; }
         button:hover { background: #218838; }
         .container { max-width: 1200px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .dashboard-link { text-align: center; margin: 30px; padding: 20px; background: #e9ecef; border-radius: 8px; font-size: 1.3em; }
+        .dashboard-link a { color: #007bff; text-decoration: underline; }
     </style>
 </head>
 <body>
+    <script>
+        // Jednoduchá ochrana heslem - změň si heslo!
+        const password = "Tomino";  // <<< ZMĚŇ TOHLE NA NĚCO SVÉHO!
+        const input = prompt("Zadej heslo pro přístup k adminu:");
+        if (input !== password) {
+            alert("Špatné heslo!");
+            window.location.href = "https://3dtisk-tomino.github.io/";  // Přesměruje na hlavní stránku
+        }
+    </script>
+
     <div class="container">
         <h1>Admin Panel - Objednávky Žetonů</h1>
         
-        <div class="stats">
-            <p><strong>Celkový počet objednávek:</strong> <span id="total-orders">12</span></p>
-            <p><strong>Celkové tržby:</strong> <span id="total-revenue">840 Kč</span> (při 70 Kč/objednávka)</p>
-            <p><strong>Nevyřízené objednávky:</strong> <span id="pending">5</span></p>
+        <div class="dashboard-link">
+            <strong>Reálný přehled objednávek přímo z Formspree:</strong><br><br>
+            <a href="https://formspree.io/forms/xpqznnno/submissions" target="_blank">
+                ➜ OTEVŘÍT FORMSPREE DASHBOARD (přihlásíš se a uvidíš všechny objednávky + export do CSV) ➜
+            </a>
+            <p>(Nejlepší a nejaktuálnější zdroj dat – doporučuju používat primárně tento!)</p>
         </div>
         
-        <h2>Seznam objednávek</h2>
+        <div class="stats">
+            <p><strong>Celkový počet objednávek:</strong> <span id="total-orders">– Používej Formspree pro aktuální čísla –</span></p>
+            <p><strong>Celkové tržby:</strong> <span id="total-revenue">– Spočítej v Formspree (počet × 70 Kč) –</span></p>
+        </div>
+        
+        <h2>Ruční seznam objednávek (pro rychlý přehled – upravuj ručně)</h2>
         <table id="orders-table">
             <thead>
                 <tr>
@@ -40,65 +59,29 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Sample data - replace with real orders -->
+                <!-- Sem ručně přidávej objednávky z Formspree, pokud chceš lokální kopii -->
                 <tr>
                     <td>001</td>
                     <td>2025-12-28</td>
                     <td>3</td>
-                    <td>zakaznik1@example.cz</td>
+                    <td>zakaznik@example.cz</td>
                     <td>Nevyřízeno</td>
                     <td><button onclick="markDone(this)">Označit jako hotovo</button></td>
                 </tr>
-                <tr>
-                    <td>002</td>
-                    <td>2025-12-29</td>
-                    <td>1</td>
-                    <td>zakaznik2@example.cz</td>
-                    <td>Hotovo</td>
-                    <td></td>
-                </tr>
-                <!-- Add more rows as needed -->
+                <!-- Další řádky přidej podle potřeby -->
             </tbody>
         </table>
         
         <div style="text-align: center; margin: 20px;">
-            <button onclick="exportCSV()">Exportovat objednávky do CSV</button>
+            <button onclick="alert('Pro export použij Formspree dashboard!')">Připomenout export</button>
         </div>
     </div>
 
     <script>
-        // Simple script to mark order as done
         function markDone(button) {
             const row = button.parentElement.parentElement;
             row.cells[4].textContent = 'Hotovo';
             button.remove();
-            updateStats();
-        }
-
-        // Update stats (placeholder - in real use, recalculate from data)
-        function updateStats() {
-            // Add logic to recount pending, etc.
-            alert('Stats updated!');
-        }
-
-        // Export table to CSV
-        function exportCSV() {
-            let csv = [];
-            const rows = document.querySelectorAll("#orders-table tr");
-            for (let row of rows) {
-                let rowData = [];
-                for (let cell of row.cells) {
-                    rowData.push(cell.textContent.trim());
-                }
-                csv.push(rowData.join(','));
-            }
-            const csvContent = csv.join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'objednavky.csv';
-            a.click();
         }
     </script>
 </body>
