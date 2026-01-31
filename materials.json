@@ -1,0 +1,16 @@
+{
+  "materials": [
+    {
+      "type": "PLA",
+      "colors": ["Černá", "Bílá", "Šedá", "Červená", "Modrá", "Zelená", "Žlutá", "Oranžová"]
+    },
+    {
+      "type": "PETG",
+      "colors": ["Čirá", "Černá", "Bílá", "Šedá"]
+    },
+    {
+      "type": "Jiný",
+      "colors": []
+    }
+  ]
+}
