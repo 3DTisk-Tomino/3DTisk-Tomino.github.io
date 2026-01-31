@@ -8,13 +8,11 @@
     <style>
         body { background-color: #121212; color: #ffffff; font-family: Arial, sans-serif; }
         header { background: linear-gradient(to right, #1e3a8a, #1e40af); color: white; padding: 50px 0; }
-        .step { background: #1e1e1e; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); padding: 20px; margin-bottom: 20px; border: 1px solid #333; }
+        .step { background: #1e1e1e; border-radius: 10px; padding: 20px; margin-bottom: 20px; border: 1px solid #333; }
         .form-control, .form-select { background-color: #2d2d2d; color: #ffffff; border: 1px solid #444; }
-        .form-control::placeholder { color: #aaaaaa; }
         .btn-success { background-color: #16a34a; border: none; }
         .alert-info { background-color: #1e293b; border: 1px solid #334155; color: #ffffff; }
         footer { background-color: #0a0a0a; color: #ffffff; }
-        #materialDescription { font-size: 0.9rem; color: #aaa; margin-top: 6px; }
     </style>
 </head>
 <body>
@@ -27,101 +25,88 @@
 
     <div class="container my-5">
         <form action="https://formspree.io/f/xykjqdaz" method="POST">
-            <!-- Model -->
             <div class="step">
-                <h4>Model / odkaz</h4>
+                <h4>Model</h4>
                 <div class="mb-3">
-                    <label class="form-label fw-bold">MakerWorld nebo přímý link (.stl / .3mf / .step):</label>
-                    <input type="url" class="form-control" name="model_odkaz" placeholder="https://makerworld.com/en/models/..." required>
+                    <label class="form-label fw-bold">Odkaz na model:</label>
+                    <input type="url" class="form-control" name="model_odkaz" placeholder="https://makerworld.com/... nebo přímý .stl/.3mf" required>
                 </div>
             </div>
 
-            <!-- Specifikace -->
             <div class="step">
                 <h4>Specifikace</h4>
                 <div class="mb-3">
                     <label class="form-label fw-bold">Počet kusů:</label>
                     <input type="number" class="form-control" name="pocet" min="1" value="1" required>
                 </div>
-
                 <div class="mb-3">
                     <label class="form-label fw-bold">Materiál:</label>
                     <select class="form-select" id="materialSelect" name="material" required>
-                        <option value="" disabled selected>Vyberte materiál</option>
+                        <option value="" disabled selected>Vyberte</option>
                     </select>
-                    <div id="materialDescription"></div>
                 </div>
-
                 <div class="mb-3">
                     <label class="form-label fw-bold">Barva:</label>
                     <select class="form-select" id="colorSelect" name="barva" required>
-                        <option value="" disabled selected>Nejprve vyberte materiál</option>
+                        <option value="" disabled selected>Nejprve materiál</option>
                     </select>
                 </div>
-
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Další požadavky:</label>
-                    <textarea class="form-control" name="poznamky" rows="4" placeholder="výplň %, vrstvy, podpory, rozměry..."></textarea>
+                    <label class="form-label fw-bold">Poznámky:</label>
+                    <textarea class="form-control" name="poznamky" rows="3" placeholder="výplň, vrstvy, podpory..."></textarea>
                 </div>
             </div>
 
-            <!-- Kontakt -->
             <div class="step">
                 <h4>Kontakt</h4>
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Tvůj e-mail:</label>
-                    <input type="email" class="form-control" name="_replyto" required placeholder="tvuj@email.cz">
+                    <label class="form-label fw-bold">E-mail:</label>
+                    <input type="email" class="form-control" name="_replyto" required placeholder="vas@email.cz">
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-success btn-lg w-100">Odeslat požadavek na nacenění</button>
+            <button type="submit" class="btn btn-success btn-lg w-100">Odeslat</button>
         </form>
 
         <div class="alert alert-info mt-4">
-            <strong>Po odeslání:</strong><br>
-            • Automatické potvrzení<br>
-            • Do 1–2 dnů odpověď s cenou a termínem
+            <strong>Po odeslání:</strong> Do 1–2 dnů odpověď s cenou a termínem.
         </div>
     </div>
 
     <footer class="text-center py-4">
-        <p>© 2025 Tomino-3D | Kontakt: Tomino.records@gmail.com</p>
+        <p>© 2025 Tomino-3D | Tomino.records@gmail.com</p>
     </footer>
 
     <script>
         fetch('materials.json')
-            .then(response => response.json())
+            .then(r => r.json())
             .then(data => {
-                const materialSelect = document.getElementById('materialSelect');
-                const colorSelect = document.getElementById('colorSelect');
-                const descDiv = document.getElementById('materialDescription');
+                const matSel = document.getElementById('materialSelect');
+                const colSel = document.getElementById('colorSelect');
 
-                data.materials.forEach(mat => {
-                    const option = document.createElement('option');
-                    option.value = mat.type;
-                    option.textContent = mat.type;
-                    materialSelect.appendChild(option);
+                data.materials.forEach(m => {
+                    let opt = document.createElement('option');
+                    opt.value = m.type;
+                    opt.textContent = m.type;
+                    matSel.appendChild(opt);
                 });
 
-                materialSelect.addEventListener('change', () => {
-                    const selected = data.materials.find(m => m.type === materialSelect.value);
-                    descDiv.textContent = selected ? selected.description : '';
+                matSel.addEventListener('change', () => {
+                    let sel = data.materials.find(m => m.type === matSel.value);
+                    colSel.innerHTML = '<option value="" disabled selected>Vyberte barvu</option>';
 
-                    colorSelect.innerHTML = '<option value="" disabled selected>Vyberte barvu</option>';
-
-                    if (selected && selected.colors.length > 0) {
-                        selected.colors.forEach(color => {
-                            const opt = document.createElement('option');
-                            opt.value = color;
-                            opt.textContent = color;
-                            colorSelect.appendChild(opt);
+                    if (sel && sel.colors.length > 0) {
+                        sel.colors.forEach(c => {
+                            let opt = document.createElement('option');
+                            opt.value = c;
+                            opt.textContent = c;
+                            colSel.appendChild(opt);
                         });
-                    } else if (selected) {
-                        colorSelect.innerHTML += '<option value="bez barvy">Bez specifikace barvy (napište v poznámkách)</option>';
+                    } else {
+                        colSel.innerHTML += '<option value="neuvedeno">Neuvedeno (napište do poznámek)</option>';
                     }
                 });
-            })
-            .catch(err => console.error('Chyba při načítání materials.json', err));
+            });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
