@@ -236,4 +236,14 @@ footer a{color:var(--accent);text-decoration:none}
 <footer>
   <a href="index.html" class="footer-logo"><span class="footer-logo-text">T3D<span> Tomino</span></span></a>
   <p>&copy; 2026 Tomino-3D &middot; 3D tisk na míru</p>
-  <p>Kontakt: <a href="/cdn-cgi/l/email-protection#792d1614101716570b1c1a160b1d0a391e14181015571a1614"><span class="__cf_email__" data-cfemail="82d6edefebecedacf0e7e1edf0e6f1c2e5e
+  <p>Kontakt: <a href="/cdn-cgi/l/email-protection#792d1614101716570b1c1a160b1d0a391e14181015571a1614"><span class="__cf_email__" data-cfemail="82d6edefebecedacf0e7e1edf0e6f1c2e5e">Tomino.records@gmail.com</a></p>
+</footer>
+
+<script>
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('vis'); obs.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
