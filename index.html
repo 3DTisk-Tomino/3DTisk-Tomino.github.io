@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tomino-3D | 3D Tisk na míru</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#09090f;
+  --card:#10101a;
+  --border:rgba(255,255,255,0.07);
+  --accent:#ff5722;
+  --accent2:#ff8a50;
+  --text:#f0ece4;
+  --muted:#666;
+  --muted2:#999;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;overflow-x:hidden;min-height:100vh}
+
+/* noise + glow */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.5}
+body::after{content:'';position:fixed;top:-15%;right:-8%;width:700px;height:700px;background:radial-gradient(circle,rgba(255,87,34,.13) 0%,transparent 68%);border-radius:50%;pointer-events:none;z-index:0;animation:orb 9s ease-in-out infinite alternate}
+@keyframes orb{from{transform:scale(1) translate(0,0);opacity:.6}to{transform:scale(1.25) translate(-40px,30px);opacity:1}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1rem 3rem;background:rgba(9,9,15,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:.7rem;text-decoration:none}
+.nav-logo-text{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.15em;color:var(--text);line-height:1}
+.nav-logo-text span{color:var(--accent)}
+.nav-right{display:flex;align-items:center;gap:2rem}
+.nav-link{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);text-decoration:none;transition:color .2s}
+.nav-link:hover{color:var(--accent)}
+.nav-cta{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;background:var(--accent);color:#fff;text-decoration:none;padding:.55rem 1.4rem;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));transition:background .2s}
+.nav-cta:hover{background:var(--accent2)}
+
+/* HERO */
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:9rem 3rem 5rem;max-width:1200px;margin:0 auto}
+.hero-tag{font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;display:flex;align-items:center;gap:.8rem;opacity:0;animation:fadeUp .7s .2s ease forwards}
+.hero-tag::before{content:'';width:2.5rem;height:1px;background:var(--accent)}
+h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(5rem,13vw,10rem);line-height:.88;letter-spacing:.02em;margin-bottom:2.2rem;opacity:0;animation:fadeUp .7s .35s ease forwards}
+h1 .outline{-webkit-text-stroke:1px rgba(255,255,255,.25);color:transparent}
+h1 .accent{color:var(--accent)}
+.hero-desc{font-size:1rem;color:var(--muted2);max-width:440px;line-height:1.75;margin-bottom:3rem;font-weight:300;opacity:0;animation:fadeUp .7s .5s ease forwards}
+.hero-actions{display:flex;gap:1.2rem;flex-wrap:wrap;opacity:0;animation:fadeUp .7s .65s ease forwards}
+.btn-main{display:inline-flex;align-items:center;gap:.7rem;background:var(--accent);color:#fff;text-decoration:none;padding:1rem 2rem;font-size:.82rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));transition:background .2s,transform .2s}
+.btn-main:hover{background:var(--accent2);transform:translateY(-2px)}
+.btn-ghost{display:inline-flex;align-items:center;gap:.7rem;background:transparent;color:var(--text);text-decoration:none;padding:1rem 2rem;font-size:.82rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--border);clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));transition:border-color .2s,color .2s}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.hero-scroll{position:absolute;bottom:3rem;left:3rem;font-size:.68rem;letter-spacing:.22em;color:var(--muted);text-transform:uppercase;display:flex;align-items:center;gap:.7rem;animation:bounce 2.5s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+/* MARQUEE */
+.marquee-wrap{position:relative;z-index:1;border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;padding:1.1rem 0}
+.marquee-inner{display:flex;white-space:nowrap;animation:marquee 24s linear infinite}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.marquee-inner span{display:inline-flex;align-items:center;gap:.9rem;padding:0 2.5rem;font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.18em;color:var(--muted)}
+.marquee-inner span::before{content:'◆';color:var(--accent);font-size:.45em}
+
+/* SECTION HEADER */
+.sec-hd{display:flex;align-items:center;gap:1.5rem;margin-bottom:3.5rem}
+.sec-num{width:58px;height:58px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);flex-shrink:0}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,5vw,3.2rem);letter-spacing:.04em;line-height:1}
+
+/* PRODUCTS */
+.products{position:relative;z-index:1;padding:6rem 3rem;max-width:1200px;margin:0 auto}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5px;background:var(--border)}
+.card{background:var(--card);padding:2rem 1.8rem;text-decoration:none;color:var(--text);position:relative;overflow:hidden;transition:background .3s;display:flex;flex-direction:column;min-height:320px}
+.card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,87,34,.1) 0%,transparent 55%);opacity:0;transition:opacity .3s}
+.card:hover{background:#16162a}
+.card:hover::before{opacity:1}
+.card-big-num{font-family:'Bebas Neue',sans-serif;font-size:5.5rem;color:rgba(255,255,255,.04);line-height:1;position:absolute;right:.8rem;top:.3rem;transition:color .3s;pointer-events:none}
+.card:hover .card-big-num{color:rgba(255,87,34,.14)}
+.card-img{width:68px;height:68px;object-fit:cover;margin-bottom:1.4rem;border:1px solid var(--border);filter:grayscale(20%);transition:filter .3s,border-color .3s}
+.card:hover .card-img{filter:grayscale(0%);border-color:rgba(255,87,34,.4)}
+.card-tag{font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:.4rem}
+.card h3{font-family:'Bebas Neue',sans-serif;font-size:1.55rem;letter-spacing:.04em;margin-bottom:.6rem;line-height:1.1}
+.card p{font-size:.83rem;color:var(--muted2);line-height:1.65;flex-grow:1}
+.card-foot{margin-top:1.4rem;padding-top:1.2rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:.8rem;color:var(--text);font-weight:500}
+.card-arr{width:28px;height:28px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s;flex-shrink:0}
+.card:hover .card-arr{background:var(--accent);border-color:var(--accent)}
+
+/* WHY */
+.why{position:relative;z-index:1;padding:5rem 3rem;max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:7rem;align-items:start}
+.why-left h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,3.8rem);line-height:1;letter-spacing:.03em;margin-bottom:1.4rem}
+.why-left h2 .ol{-webkit-text-stroke:1px rgba(255,255,255,.2);color:transparent}
+.why-left p{color:var(--muted2);line-height:1.8;font-size:.88rem;margin-bottom:2rem}
+.why-items{display:flex;flex-direction:column}
+.why-item{padding:1.5rem 0;border-bottom:1px solid var(--border);display:flex;gap:1.2rem;align-items:flex-start}
+.why-item:first-child{border-top:1px solid var(--border)}
+.why-ico{font-size:1.1rem;flex-shrink:0;margin-top:.1rem}
+.why-item h4{font-size:.88rem;font-weight:500;margin-bottom:.2rem;color:var(--text)}
+.why-item p{font-size:.8rem;color:var(--muted2);line-height:1.6}
+
+/* CTA BANNER */
+.cta-banner{position:relative;z-index:1;margin:2rem 3rem 6rem;background:var(--accent);padding:3.5rem 4rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;clip-path:polygon(0 0,calc(100% - 24px) 0,100% 24px,100% 100%,24px 100%,0 calc(100% - 24px));overflow:hidden}
+.cta-banner::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 12px,rgba(0,0,0,.06) 12px,rgba(0,0,0,.06) 24px)}
+.cta-txt{position:relative}
+.cta-txt h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,4vw,3rem);letter-spacing:.06em;color:#fff}
+.cta-txt p{color:rgba(255,255,255,.72);font-size:.88rem;margin-top:.3rem}
+.cta-link{position:relative;display:inline-flex;align-items:center;gap:.8rem;background:#fff;color:var(--accent);text-decoration:none;padding:1rem 2rem;font-size:.82rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;transition:background .2s,color .2s;flex-shrink:0;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}
+.cta-link:hover{background:#0a0a0f;color:#fff}
+
+/* FOOTER */
+footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:2.5rem 3rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.footer-logo{display:flex;align-items:center;gap:.5rem;text-decoration:none}
+.footer-logo-text{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:.15em;color:var(--text)}
+.footer-logo-text span{color:var(--accent)}
+footer p{font-size:.77rem;color:var(--muted)}
+footer a{color:var(--accent);text-decoration:none}
+
+/* FADE IN */
+.fade{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.fade.vis{opacity:1;transform:none}
+
+@media(max-width:1024px){.cards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){
+  nav{padding:1rem 1.5rem}
+  .nav-right .nav-link{display:none}
+  .hero{padding:7rem 1.5rem 4rem}
+  .products{padding:4rem 1.5rem}
+  .why{grid-template-columns:1fr;padding:4rem 1.5rem;gap:3rem}
+  .cta-banner{flex-direction:column;align-items:flex-start;margin:2rem 1.5rem 4rem;padding:2.5rem}
+  footer{padding:2rem 1.5rem;flex-direction:column;gap:.5rem}
+  .cards{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-text">T3D<span> Tomino</span></span>
+  </a>
+  <div class="nav-right">
+    <a href="#produkty" class="nav-link">Produkty</a>
+    <a href="#proc" class="nav-link">O nás</a>
+    <a href="/cdn-cgi/l/email-protection#3a6e555753545514485f5955485e497a5d575b535614595557" class="nav-cta">Napište nám</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <p class="hero-tag">Česká 3D tiskárna &middot; Zakázky na míru</p>
+  <h1>3D TISK<br><span class="outline">NA</span> <span class="accent">MÍRU</span></h1>
+  <p class="hero-desc">Žetony, klíčenky, figurky a cokoliv dalšího. Rychlá výroba, férová cena, vlastní design. Od 1 kusu po série.</p>
+  <div class="hero-actions">
+    <a href="#produkty" class="btn-main">Zobrazit produkty <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    <a href="custom.html" class="btn-ghost">Zakázka na míru</a>
+  </div>
+  <div class="hero-scroll"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg> Scrolluj dolů</div>
+</section>
+
+<div class="marquee-wrap">
+  <div class="marquee-inner">
+    <span>Rychlá výroba</span><span>Vlastní design</span><span>Férová cena</span><span>PLA &amp; PETG</span><span>Zakázky na míru</span><span>Žetony s logem</span><span>Klíčenky</span><span>Figurky</span><span>Praha &amp; okolí</span><span>Rychlá výroba</span><span>Vlastní design</span><span>Férová cena</span><span>PLA &amp; PETG</span><span>Zakázky na míru</span><span>Žetony s logem</span><span>Klíčenky</span><span>Figurky</span><span>Praha &amp; okolí</span>
+  </div>
+</div>
+
+<section class="products fade" id="produkty">
+  <div class="sec-hd"><div class="sec-num">01</div><h2 class="sec-title">Vyberte si<br>variantu</h2></div>
+  <div class="cards">
+
+    <a class="card" href="token.html">
+      <span class="card-big-num">01</span>
+      <img class="card-img" src="zeton.png" alt="Standardní žeton" onerror="this.style.display='none'">
+      <span class="card-tag">Nejpopulárnější</span>
+      <h3>Standardní<br>Žeton</h3>
+      <p>Bez loga, ihned dostupný. Ideální pro restaurace, únikové hry nebo herní doplňky.</p>
+      <div class="card-foot">
+        od 25 Kč / ks
+        <div class="card-arr"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </div>
+    </a>
+
+    <a class="card" href="logo-token.html">
+      <span class="card-big-num">02</span>
+      <img class="card-img" src="zeton.png" alt="Žeton s logem" onerror="this.style.display='none'">
+      <span class="card-tag">Nejlepší hodnota</span>
+      <h3>Žeton<br>s Logem</h3>
+      <p>Vlastní logo na obou stranách. Perfektní branding pro váš podnik nebo akci.</p>
+      <div class="card-foot">
+        od 15 Kč / ks (min. 5 ks)
+        <div class="card-arr"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </div>
+    </a>
+
+    <a class="card" href="klicenka.html">
+      <span class="card-big-num">03</span>
+      <div class="card-img" style="display:flex;align-items:center;justify-content:center;font-size:2rem;background:rgba(255,87,34,.08);border:1px solid rgba(255,87,34,.2)">🔑</div>
+      <span class="card-tag">Nové!</span>
+      <h3>Klíčenky<br>na míru</h3>
+      <p>Vlastní tvar, logo nebo text. Skvělý reklamní předmět nebo originální dárek.</p>
+      <div class="card-foot">
+        od 30 Kč / ks
+        <div class="card-arr"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </div>
+    </a>
+
+    <a class="card" href="custom.html">
+      <span class="card-big-num">04</span>
+      <div class="card-img" style="display:flex;align-items:center;justify-content:center;font-size:2rem;background:rgba(255,87,34,.08);border:1px solid rgba(255,87,34,.2)">⚙️</div>
+      <span class="card-tag">Neomezené možnosti</span>
+      <h3>Zakázkový<br>3D Tisk</h3>
+      <p>Figurky, náhradní díly, prototypy, cosplay a cokoliv dalšího na míru.</p>
+      <div class="card-foot">
+        Cena dle projektu
+        <div class="card-arr"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<section class="why fade" id="proc">
+  <div class="why-left">
+    <div class="sec-hd" style="margin-bottom:1.5rem"><div class="sec-num" style="color:var(--muted)">02</div><h2 class="sec-title" style="font-size:2rem">Proč<br>Tomino-3D?</h2></div>
+    <p>Jsme malá česká tiskárna s důrazem na kvalitu a komunikaci. Každá zakázka je pro nás důležitá – od 1 kusu po série stovek.</p>
+    <a href="/cdn-cgi/l/email-protection#0d596260646362237f686e627f697e4d6a606c6461236e6260" class="btn-main" style="font-size:.78rem;padding:.85rem 1.7rem">Napište nám <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+  <div class="why-items">
+    <div class="why-item"><div class="why-ico">⚡</div><div><h4>Rychlá výroba</h4><p>Většina zakázek expedována do 3–5 pracovních dní. Expresní výroba na vyžádání.</p></div></div>
+    <div class="why-item"><div class="why-ico">🎨</div><div><h4>Vlastní design</h4><p>Pošlete nám logo, soubor nebo jen nápad. Pomůžeme vám s návrhem.</p></div></div>
+    <div class="why-item"><div class="why-ico">💰</div><div><h4>Transparentní ceny</h4><p>Žádné skryté poplatky. Nabídku dostanete do 24 hodin od poptávky.</p></div></div>
+    <div class="why-item"><div class="why-ico">🇨🇿</div><div><h4>Česká výroba</h4><p>Tisk probíhá v ČR. Osobní odběr možný, poštovné po celé republice.</p></div></div>
+  </div>
+</section>
+
+<div class="cta-banner fade">
+  <div class="cta-txt"><h2>Máte zakázku<br>na míru?</h2><p>Napište nám – odpovídáme do 24 hodin.</p></div>
+  <a href="/cdn-cgi/l/email-protection#bce8d3d1d5d2d392ced9dfd3ced8cffcdbd1ddd5d092dfd3d1" class="cta-link">Kontaktujte nás <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+</div>
+
+<footer>
+  <a href="index.html" class="footer-logo"><span class="footer-logo-text">T3D<span> Tomino</span></span></a>
+  <p>&copy; 2026 Tomino-3D &middot; 3D tisk na míru</p>
+  <p>Kontakt: <a href="/cdn-cgi/l/email-protection#792d1614101716570b1c1a160b1d0a391e14181015571a1614"><span class="__cf_email__" data-cfemail="82d6edefebecedacf0e7e1edf0e6f1c2e5e

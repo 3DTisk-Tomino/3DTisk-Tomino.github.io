@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Žeton s Logem | Tomino-3D</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0a0a0f;--border:rgba(255,255,255,0.07);--accent:#ff5722;--accent2:#ff8a50;--text:#f0ece4;--muted:#888;--card-bg:#14141e}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;overflow-x:hidden}
+  body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:.4;pointer-events:none;z-index:0}
+  body::after{content:'';position:fixed;top:-20%;right:-10%;width:600px;height:600px;background:radial-gradient(circle,rgba(255,87,34,.12) 0%,transparent 70%);border-radius:50%;pointer-events:none;z-index:0;animation:pulse 8s ease-in-out infinite alternate}
+  @keyframes pulse{from{transform:scale(1);opacity:.5}to{transform:scale(1.2);opacity:1}}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1rem 3rem;background:rgba(10,10,15,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+  .nav-logo{display:flex;align-items:center;gap:.7rem;text-decoration:none}
+  .nav-logo-text{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.15em;color:var(--text);line-height:1}
+  .nav-logo-text span{color:var(--accent)}
+  .nav-back{font-size:.8rem;color:var(--muted);text-decoration:none;letter-spacing:.05em;transition:color .2s;display:flex;align-items:center;gap:.4rem}
+  .nav-back:hover{color:var(--accent)}
+
+  .page-hero{position:relative;z-index:1;padding:8rem 3rem 3rem;max-width:1100px;margin:0 auto}
+  .breadcrumb{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:1.5rem;display:flex;align-items:center;gap:.6rem}
+  .breadcrumb a{color:var(--muted);text-decoration:none;transition:color .2s}
+  .breadcrumb a:hover{color:var(--accent)}
+  .breadcrumb-sep{color:var(--border)}
+  h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,8vw,6rem);line-height:.9;letter-spacing:.02em;margin-bottom:1.5rem}
+  h1 .ghost{-webkit-text-stroke:1px rgba(255,255,255,.25);color:transparent}
+  .page-desc{font-size:.95rem;color:var(--muted);max-width:500px;line-height:1.7}
+
+  .product-layout{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 3rem 6rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+
+  .product-visual{}
+  .img-frame{background:var(--card-bg);border:1px solid var(--border);border-radius:4px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;margin-bottom:2rem;overflow:hidden;position:relative}
+  .img-frame img{width:100%;height:100%;object-fit:cover}
+  .img-placeholder{font-size:5rem;opacity:.2}
+  .badge-strip{display:flex;gap:.8rem;flex-wrap:wrap}
+  .badge{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem 1rem;border:1px solid var(--border);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .badge.hot{border-color:var(--accent);color:var(--accent)}
+  .badge.value{border-color:rgba(255,200,0,.4);color:rgba(255,200,0,.9)}
+
+  /* Logo showcase strip */
+  .logo-note{margin-top:2rem;background:rgba(255,87,34,.06);border:1px solid rgba(255,87,34,.2);padding:1.5rem;position:relative;overflow:hidden}
+  .logo-note::before{content:'VAŠE LOGO';position:absolute;right:-10px;top:50%;transform:translateY(-50%);font-family:'Bebas Neue',sans-serif;font-size:4rem;color:rgba(255,87,34,.06);letter-spacing:.1em;white-space:nowrap}
+  .logo-note-title{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem}
+  .logo-note p{font-size:.82rem;color:var(--muted);line-height:1.6}
+  .logo-note strong{color:var(--text)}
+
+  .features{margin-top:2rem}
+  .feature-row{display:flex;align-items:flex-start;gap:1rem;padding:1.2rem 0;border-bottom:1px solid var(--border)}
+  .feature-row:first-child{border-top:1px solid var(--border)}
+  .feat-icon{font-size:1rem;flex-shrink:0;margin-top:.1rem}
+  .feat-text h4{font-size:.85rem;font-weight:500;margin-bottom:.2rem}
+  .feat-text p{font-size:.78rem;color:var(--muted);line-height:1.5}
+
+  /* Right: Order panel */
+  .order-panel{background:var(--card-bg);border:1px solid var(--border);padding:2.5rem}
+  .panel-title{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.05em;margin-bottom:.5rem}
+  .panel-price{font-size:.85rem;color:var(--muted);margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  .panel-price strong{color:var(--accent);font-size:1.1rem}
+
+  .min-notice{font-size:.78rem;color:var(--muted);background:rgba(255,255,255,.03);border:1px solid var(--border);padding:.8rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:.6rem}
+  .min-notice strong{color:var(--text)}
+
+  .price-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.8rem;margin-bottom:2rem}
+  .price-option{padding:1rem;border:1px solid var(--border);cursor:pointer;transition:all .2s;text-align:center;position:relative}
+  .price-option:hover{border-color:var(--accent)}
+  .price-option.active{border-color:var(--accent);background:rgba(255,87,34,.06)}
+  .price-option .qty{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.05em;display:block}
+  .price-option .price{font-size:.8rem;color:var(--muted);margin-top:.2rem}
+  .price-option .per-item{font-size:.72rem;color:var(--accent);margin-top:.1rem}
+  .price-option .best{position:absolute;top:-1px;right:-1px;background:var(--accent);color:#fff;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .5rem}
+
+  .form-group{margin-bottom:1.5rem}
+  .form-label{display:block;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
+  .form-input,.form-select,.form-textarea{width:100%;background:#0f0f1a;border:1px solid var(--border);color:var(--text);padding:.85rem 1rem;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:300;transition:border-color .2s;outline:none;border-radius:0;appearance:none}
+  .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent)}
+  .form-textarea{resize:vertical;min-height:100px}
+  .form-select{background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23888' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;padding-right:2.5rem}
+  .form-select option{background:var(--bg)}
+
+  /* File upload */
+  .file-upload-wrap{position:relative}
+  .file-upload-label{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;padding:2rem;border:1px dashed rgba(255,87,34,.4);background:rgba(255,87,34,.03);cursor:pointer;transition:all .2s;text-align:center}
+  .file-upload-label:hover{border-color:var(--accent);background:rgba(255,87,34,.06)}
+  .file-upload-label .upload-icon{font-size:1.8rem;opacity:.6}
+  .file-upload-label .upload-text{font-size:.8rem;color:var(--muted)}
+  .file-upload-label .upload-text strong{color:var(--accent);display:block;font-size:.85rem;margin-bottom:.2rem}
+  .file-upload-label .upload-hint{font-size:.7rem;color:rgba(136,136,136,.6);margin-top:.2rem}
+  #logoFile{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+  .file-name{font-size:.75rem;color:var(--accent);margin-top:.5rem;min-height:1rem}
+
+  .payment-note{font-size:.78rem;color:var(--muted);padding:1rem;border:1px solid var(--border);margin-bottom:1.5rem;line-height:1.6}
+  .payment-note strong{color:var(--text)}
+
+  .submit-btn{width:100%;background:var(--accent);color:#fff;border:none;padding:1.1rem;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}
+  .submit-btn:hover{background:var(--accent2)}
+  .form-note{font-size:.72rem;color:var(--muted);text-align:center;margin-top:1rem;line-height:1.5}
+
+  footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:2rem 3rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+  .footer-logo-text{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.15em;color:var(--text)}
+  .footer-logo-text span{color:var(--accent)}
+  footer p{font-size:.78rem;color:var(--muted)}
+  footer a{color:var(--accent);text-decoration:none}
+
+  @media(max-width:768px){nav{padding:1rem 1.5rem}.page-hero{padding:7rem 1.5rem 2rem}.product-layout{grid-template-columns:1fr;padding:0 1.5rem 4rem;gap:2.5rem}footer{padding:1.5rem}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-text">T3D<span> Tomino</span></span>
+  </a>
+  <a href="index.html" class="nav-back">
+    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Zpět na hlavní
+  </a>
+</nav>
+
+<div class="page-hero">
+  <div class="breadcrumb">
+    <a href="index.html">Tomino-3D</a>
+    <span class="breadcrumb-sep">/</span>
+    <span>Žeton s logem</span>
+  </div>
+  <h1>ŽETON<br><span class="ghost">S VAŠÍM</span><br>LOGEM</h1>
+  <p class="page-desc">Vaše logo na obou stranách žetonu. Perfektní branding pro váš podnik, akci nebo věrnostní program.</p>
+</div>
+
+<div class="product-layout">
+  <div class="product-visual">
+    <div class="img-frame">
+      <img src="logo.png" alt="Žeton s logem" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="img-placeholder" style="display:none">🎯</div>
+    </div>
+    <div class="badge-strip">
+      <div class="badge value">★ Nejlepší hodnota</div>
+      <div class="badge">Vaše logo</div>
+      <div class="badge">Min. 5 ks</div>
+    </div>
+
+    <div class="logo-note">
+      <div class="logo-note-title">🎨 Vlastní design</div>
+      <p>Každý žeton nese <strong>vaše logo</strong> — ne naše. Pošlete nám soubor (.SVG, .PNG, .AI, .PDF) a my se postaráme o zbytek. Logo tiskeme na obě strany, nebo jen na jednu — na vás.</p>
+    </div>
+
+    <div class="features">
+      <div class="feature-row">
+        <div class="feat-icon">🎯</div>
+        <div class="feat-text"><h4>100% vaše branding</h4><p>Logo, text nebo QR kód — cokoliv chcete mít na žetonu. Žádné naše logo, žádná reklama.</p></div>
+      </div>
+      <div class="feature-row">
+        <div class="feat-icon">📐</div>
+        <div class="feat-text"><h4>Průměr 35 mm (výchozí)</h4><p>Jiná velikost? Napište do poznámky. Přizpůsobíme se vaší potřebě.</p></div>
+      </div>
+      <div class="feature-row">
+        <div class="feat-icon">🎨</div>
+        <div class="feat-text"><h4>Výběr barvy a materiálu</h4><p>PLA (8 barev) nebo PETG (4 barvy). Vyberte ve formuláři nebo nám napište.</p></div>
+      </div>
+      <div class="feature-row">
+        <div class="feat-icon">⚡</div>
+        <div class="feat-text"><h4>Expedice 3–5 dní</h4><p>Po schválení náhledu. Náhled posíláme do 24 hodin od přijetí loga.</p></div>
+      </div>
+      <div class="feature-row">
+        <div class="feat-icon">🚚</div>
+        <div class="feat-text"><h4>Doprava po celé ČR</h4><p>Osobní odběr (Praha + okolí), nebo doručení na dobírku / převodem.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDER PANEL -->
+  <div class="order-panel">
+    <div class="panel-title">Objednat</div>
+    <div class="panel-price">Cena od <strong>15 Kč / ks</strong> (při 5+ ks)</div>
+
+    <div class="min-notice">
+      <span>ℹ️</span>
+      <span>Minimální objednávka: <strong>5 kusů</strong></span>
+    </div>
+
+    <div class="price-grid">
+      <div class="price-option" onclick="selectQty(this,'5','75 Kč','15 Kč/ks')">
+        <span class="qty">5 ks</span>
+        <div class="price">75 Kč celkem</div>
+        <div class="per-item">15 Kč / ks</div>
+      </div>
+      <div class="price-option active" onclick="selectQty(this,'10','130 Kč','13 Kč/ks')">
+        <span class="best">Výhodné</span>
+        <span class="qty">10 ks</span>
+        <div class="price">130 Kč celkem</div>
+        <div class="per-item">13 Kč / ks</div>
+      </div>
+      <div class="price-option" onclick="selectQty(this,'20','240 Kč','12 Kč/ks')">
+        <span class="qty">20 ks</span>
+        <div class="price">240 Kč celkem</div>
+        <div class="per-item">12 Kč / ks</div>
+      </div>
+      <div class="price-option" onclick="selectQty(this,'50+','Nabídka','dle množství')">
+        <span class="qty">50+</span>
+        <div class="price">Poptejte nás</div>
+        <div class="per-item">Nejlepší cena</div>
+      </div>
+    </div>
+
+    <form action="https://formspree.io/f/xpqznnno" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="produkt" value="Žeton s logem">
+      <input type="hidden" id="qty-hidden" name="množství" value="10 ks — 130 Kč">
+
+      <div class="form-group">
+        <label class="form-label">Nahrát logo *</label>
+        <div class="file-upload-wrap">
+          <label class="file-upload-label" for="logoFile">
+            <span class="upload-icon">📁</span>
+            <div class="upload-text">
+              <strong>Klikněte pro nahrání souboru</strong>
+              SVG, PNG, AI, PDF, EPS
+            </div>
+            <div class="upload-hint">Čím vyšší rozlišení, tím lepší výsledek</div>
+          </label>
+          <input type="file" id="logoFile" name="logo" accept=".svg,.png,.jpg,.jpeg,.ai,.pdf,.eps" onchange="showFileName(this)">
+        </div>
+        <div class="file-name" id="fileName">Žádný soubor nevybrán</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Barva žetonu</label>
+        <select class="form-select" name="barva">
+          <option value="">-- Vyberte barvu --</option>
+          <optgroup label="PLA">
+            <option>PLA – Černá</option>
+            <option>PLA – Bílá</option>
+            <option>PLA – Šedá</option>
+            <option>PLA – Červená</option>
+            <option>PLA – Modrá</option>
+            <option>PLA – Zelená</option>
+            <option>PLA – Žlutá</option>
+            <option>PLA – Oranžová</option>
+          </optgroup>
+          <optgroup label="PETG">
+            <option>PETG – Čirá</option>
+            <option>PETG – Černá</option>
+            <option>PETG – Bílá</option>
+            <option>PETG – Šedá</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Váš e-mail *</label>
+        <input type="email" name="email" class="form-input" placeholder="vas@email.cz" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Telefon (nepovinné)</label>
+        <input type="tel" name="telefon" class="form-input" placeholder="+420 777 000 000">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Poznámka</label>
+        <textarea name="poznámka" class="form-textarea" placeholder="Umístění loga (obě strany / jen přední), vlastní text, jiná velikost, barvy pro různé série..."></textarea>
+      </div>
+
+      <div class="payment-note">
+        <strong>Platba:</strong> Dobírka nebo bankovní převod.<br>
+        Náhled pošleme do 24 hod od přijetí loga. Tiskeme až po vašem odsouhlasení.
+      </div>
+
+      <button type="submit" class="submit-btn">Odeslat poptávku →</button>
+      <p class="form-note">Odpovídáme do 24 hodin · Praha + okolí · Doprava po celé ČR</p>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <span class="footer-logo-text">T3D<span> Tomino</span></span>
+  <p>&copy; 2026 Tomino-3D · 3D tisk na míru</p>
+  <p>Kontakt: <a href="mailto:Tomino.records@gmail.com">Tomino.records@gmail.com</a></p>
+</footer>
+
+<script>
+function selectQty(el, qty, total, per) {
+  document.querySelectorAll('.price-option').forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('qty-hidden').value = qty + ' ks — ' + total + ' (' + per + ')';
+}
+function showFileName(input) {
+  const name = input.files[0] ? input.files[0].name : 'Žádný soubor nevybrán';
+  document.getElementById('fileName').textContent = '✓ ' + name;
+  document.getElementById('fileName').style.color = 'var(--accent)';
+}
+</script>
+</body>
+</html>
